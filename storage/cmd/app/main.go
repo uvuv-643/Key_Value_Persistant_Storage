@@ -4,6 +4,7 @@ import (
 	"Key_Value_Persistant_Storage/internal/logging"
 	"Key_Value_Persistant_Storage/internal/routes"
 	"Key_Value_Persistant_Storage/internal/services"
+	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -41,7 +42,16 @@ func main() {
 	conf.Logger = logger
 	logger.Infof("%+v\n", conf)
 
-	conf.ConnectDatabase()
+	ctx, cancel := context.WithCancel(context.Background())
+	conf.ConnectDatabase(ctx)
+	conf.MongoContext = &ctx
+
+	defer func() {
+		cancel()
+		if err := conf.MongoClient.Disconnect(*conf.MongoContext); err != nil {
+			log.Fatalf("Failed to disconnect database")
+		}
+	}()
 
 	mode := gin.ReleaseMode
 	if conf.Env == "local" {

@@ -10,6 +10,8 @@ services:
       - ./mongo/.env
     networks:
       - app-network
+    volumes:
+      - dbdata:/data/db
 
   storage:
     build:
@@ -17,6 +19,8 @@ services:
       dockerfile: Dockerfile
     container_name: storage
     restart: unless-stopped
+    volumes:
+      - ./storage/files:/files
     ports:
       - "8080:8080"
     networks:
@@ -25,3 +29,8 @@ services:
 networks:
   app-network:
     driver: bridge
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local
