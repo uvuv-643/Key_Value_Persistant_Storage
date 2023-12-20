@@ -52,3 +52,11 @@ with headers corresponding to the content.
 
 where N - number of documents in collection and M is number of documents
 in collection which were already expired.
+
+
+### Deployment
+```bash
+cp ./mongo/.env.example ./mongo/.env
+cp ./storage/.env.example ./storage/.env
+docker compose up -d
+```
